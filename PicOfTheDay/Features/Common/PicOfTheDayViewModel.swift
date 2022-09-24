@@ -8,13 +8,14 @@
 import Foundation
 import Combine
 
+/// ViewModel for fetching Pic of The Day data required to drive PicofTheView. This viewModel also registers itself to observe changes from  FavouritesService so that it can update itself  with respect changes in Favourites anywhere into the app e.g. in Favourites tab
 class PicOfTheDayViewModel: ObservableObject {
     
-    @Published var favouritePics: [PicOfTheDay]?
     @Published var requestState: RequestState<PicOfTheDay> = .loading
-    
     @Published var date = Date()
     
+    @Published private var favouritePics: [PicOfTheDay]?
+
     private let dateFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
@@ -32,14 +33,16 @@ class PicOfTheDayViewModel: ObservableObject {
         Task {
             do {
                 if let pic = try await PicOfTheDayService().fetchPicOfTheDay(date: dateFormatter.string(from: date)) {
-                    DispatchQueue.main.async { [weak self] in
+                    dispatchOnMainThread { [weak self] in
                         self?.requestState = .success(pic)
                     }
                 } else {
-                    self.requestState = .failure(ServiceFailure.noDataAvailable)
+                    dispatchOnMainThread { [weak self] in
+                        self?.requestState = .failure(PersistentStorageFailure.noDataInPersistentStore)
+                    }
                 }
             } catch {
-                DispatchQueue.main.async { [weak self] in 
+                dispatchOnMainThread { [weak self] in 
                     self?.requestState = .failure(error)
                 }
             }
@@ -52,7 +55,12 @@ class PicOfTheDayViewModel: ObservableObject {
     
     func isFavourite() -> Bool {
         guard let favourites = favouritePics else { return false }
-        return favourites.contains { $0.id == requestState.value?.id}
+        return favourites.contains { $0.id == requestState.value?.id }
+    }
+    
+    // Returns mock data needed to show as placeholder for redacted view
+    func mockPicForRedactedPlaceholder() -> PicOfTheDay {
+        PicOfTheDay.getMock()
     }
     
 }

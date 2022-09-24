@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SwiftUI
 
-
+/// This service is responsible for caching in hard disk. We use this service to support No Internet Connectivity.
 class PersistantStoreService {
     
     static let shared = PersistantStoreService()
@@ -24,11 +24,12 @@ class PersistantStoreService {
         let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         favouritesDataSourceURL = documentsPath.appendingPathComponent("Favourites").appendingPathExtension("json")
         lastUpdatedDataSourceURL = documentsPath.appendingPathComponent("LastUpdated").appendingPathExtension("json")
+        
         NotificationCenter.default
                     .addObserver(self, selector: #selector(self.save), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
-    // Save last updated and favourites on disk
+    // Save last updated pic and pic image, favourites and favourite images on disk. This save operation is done on every app did enter background event
     @objc func save() {
         saveLastUpdated()
         saveFavourites()
@@ -76,6 +77,14 @@ class PersistantStoreService {
     }
     
     private func saveImages() {
+        
+        // Save Last Updated Image
+        if let lastUpdated = InMemoryStorageService.shared.storageModel.lastUpdated,
+           let image = InMemoryStorageService.shared.getImageData(key: lastUpdated.url) {
+            saveImage(id: lastUpdated.id, imageData: image)
+        }
+        
+        // Save Favourite images
         guard let favourites = InMemoryStorageService.shared.storageModel.favourites else { return }
         favourites.forEach { favourite in
             guard
@@ -85,45 +94,5 @@ class PersistantStoreService {
         }
     }
     
-}
-
-extension PersistantStoreService {
-    
-    func saveImage(id: String, imageData: Data) {
-        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-        let fileName = id
-        let fileURL = documentsDirectory.appendingPathComponent(fileName)
-        
-        //Checks if file exists, removes it if so.
-        if FileManager.default.fileExists(atPath: fileURL.path) {
-            do {
-                try FileManager.default.removeItem(atPath: fileURL.path)
-                print("Removed old image")
-            } catch let removeError {
-                print("couldn't remove file at path", removeError)
-            }
-            
-        }
-        
-        do {
-            try imageData.write(to: fileURL)
-        } catch let error {
-            print("error saving file with error", error)
-        }
-        
-    }
-
-    func loadImageFromDiskWith(id: String) -> UIImage? {
-        let documentDirectory = FileManager.SearchPathDirectory.documentDirectory
-        let userDomainMask = FileManager.SearchPathDomainMask.userDomainMask
-        let paths = NSSearchPathForDirectoriesInDomains(documentDirectory, userDomainMask, true)
-        if let dirPath = paths.first {
-            let imageUrl = URL(fileURLWithPath: dirPath).appendingPathComponent(id)
-            let image = UIImage(contentsOfFile: imageUrl.path)
-            return image
-            
-        }
-        return nil
-    }
 }
 

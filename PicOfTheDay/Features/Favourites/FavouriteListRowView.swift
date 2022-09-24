@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 
 struct FavouriteListRowView: View {
-    
     let title: String
     let date: String
     let url: String
     
     var body: some View {
         HStack {
+            
             VStack(alignment: .leading, spacing: 16) {
                 Text("\(title)")
                 Text("\(date)")
@@ -25,8 +25,8 @@ struct FavouriteListRowView: View {
             
             AsyncImage(width: 100,
                        height: 100,
-                       placeholderImage: Image("placeholder"),
-                       url: URL(string: url)!)
+                       url: URL(string: url)!,
+                       cacheKey: date)
         }
         
     }

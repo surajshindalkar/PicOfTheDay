@@ -1,0 +1,19 @@
+/* 
+  Localizable.strings
+  PicOfTheDay
+
+  Created by Shindalkar, Suraj Manmath on 9/24/22.
+  
+*/
+
+// Tab View
+"tab.home" = "Home";
+"tab.favourites" = "Favourites";
+
+// Home Tab
+"homeTab.selectDate" = "Select Date";
+
+// Pic of The Day View
+"picOfTheDay.date" = "Date : %@";
+"picOfTheDay.title" = "Title: %@";
+"picOfTheDay.explanation" = "Explanation";

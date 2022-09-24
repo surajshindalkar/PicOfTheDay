@@ -18,6 +18,7 @@ enum RequestType: String {
     case connect = "CONNECT"
 }
 
+/// Enum for Request Errors. We can add more cases as per requirement
 enum RESTRequestError: Error {
     case invalidURL
     case invalidServerResponse
@@ -40,6 +41,7 @@ enum RESTRequestError: Error {
     }
 }
 
+/// Protocol for REST requests
 protocol RESTRequestProtocol {
     var host: String { get }
     var path: String { get }
@@ -47,8 +49,12 @@ protocol RESTRequestProtocol {
     var params: [String: Any]? { get }
     var urlParams: [String: String]? { get }
     var requestType: RequestType { get }
+    
+    func createURLRequest(authToken: String?) throws -> URLRequest
+    
 }
 
+/// Default implementation for createURLRequest
 extension RESTRequestProtocol {
     
     func createURLRequest(authToken: String?) throws -> URLRequest {

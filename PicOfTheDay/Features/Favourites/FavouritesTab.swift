@@ -7,12 +7,12 @@
 
 import SwiftUI
 
+/// Displays a list of Favourite pics. Also allows Swipe To Delete featiure to remove a favourite from favourite list
 struct FavouritesTab: View {
     
-    @StateObject var viewModel = FavouritesTabViewModel()
+    @StateObject private var viewModel = FavouritesTabViewModel()
     
     var body: some View {
-        
         NavigationView {
             List {
                 ForEach(viewModel.favourites ?? [], id: \.id) { favourite in
@@ -21,7 +21,8 @@ struct FavouritesTab: View {
                                         date: favourite.date,
                                         url: favourite.url,
                                         explanation: favourite.explanation,
-                                        isFavourite: true, toggleCallback: {
+                                        isFavourite: true,
+                                        mediaType: PicOfTheDay.MediaType(rawValue: favourite.mediaType) ?? .image,  toggleCallback: {
                             viewModel.toggleFavourite(pic: favourite)
                         })
                     } label: {
@@ -36,13 +37,12 @@ struct FavouritesTab: View {
                         viewModel.toggleFavourite(pic: pic)
                     }
                 }
-                
             }
             .listStyle(PlainListStyle())
             .scrollContentBackground(.hidden)
-        }        
+        }
     }
-
+    
 }
 
 

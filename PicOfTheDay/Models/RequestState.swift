@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// This enum is used as a published var and drive UI depending on its status
 enum RequestState<T> {
     case loading
     case success(_ data: T)

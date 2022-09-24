@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+/// This model is used to cache data in memory so that we can improve user experience. This model caches images and NASA API call response so that we do not make those service calls if we have data in cache
 class InMemoryStorageModel {
     var lastUpdated: PicOfTheDay?
     var favourites: [PicOfTheDay]?

@@ -10,10 +10,11 @@ import Combine
 import UIKit
 
 
-enum ServiceFailure: Error {
-    case noDataAvailable
+enum PersistentStorageFailure: Error {
+    case noDataInPersistentStore
 }
 
+/// This is single source of truth for getting PicOfTheDay. This service as an abstraction which uses different data sources depending on  requirements e.g. Service call to NASA API, InMemoryStorageServoce or PersistentStorageService.
 final class PicOfTheDayService {
     
     func fetchPicOfTheDay(date: String) async throws -> PicOfTheDay?  {
@@ -23,25 +24,33 @@ final class PicOfTheDayService {
             return pic
         }
         
+        // No data in Cache
         do {
+            // Make API Call
             let pic = try await NASAPicService.pic(date: date)
+            
+            // Store in InMemoryCache
             InMemoryStorageService.shared.saveLastUpdated(pic: pic)
             InMemoryStorageService.shared.savePicOfTheDay(id: date, pic: pic)
+            
             return pic
+            
         } catch {
             
-            print("Error in fetching pic\(error.localizedDescription)")
+            // Error in API call
+            print("Error in fetching pic from API \(error.localizedDescription)")
             
-            // Offline mode support
+            // Error can be beacause of any reason. We want to support No Internet Connectivity.
             let errorCode = (error as NSError).code
             if errorCode == NSURLErrorNotConnectedToInternet {
-                // Check if pic exists in Memory
+                // Check if pic exists in Persistent Storage
                 if let pic = PersistantStoreService.shared.getLastUpdated() {
                     return pic
                 } else {
-                    throw error
+                    throw PersistentStorageFailure.noDataInPersistentStore
                 }
             } else {
+                // Error is not because of No Internet Connectivity. We can not do much here. Throw API error
                 throw error
             }
             

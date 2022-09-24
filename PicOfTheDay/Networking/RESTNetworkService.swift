@@ -7,10 +7,12 @@
 
 import Foundation
 
+/// Protocol for REST Network Requests
 protocol RESTNetworkServiceProtocol {
     static func run<T: Decodable>(_ request: RESTRequestProtocol, authToken: String?, responseModel: T.Type) async throws -> T
 }
 
+/// Implementation for our app. We can provide different implementations as per requirements
 struct RESTNetworkService: RESTNetworkServiceProtocol {
     
     static func run<T: Decodable>(_ request: RESTRequestProtocol, authToken: String? = nil, responseModel: T.Type) async throws -> T {

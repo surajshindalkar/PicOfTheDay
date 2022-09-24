@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// View Model for Favourites tab. Registers itself with FavouritesService and makes sure view has latest data
 class FavouritesTabViewModel: ObservableObject {
     
     @Published var favourites: [PicOfTheDay]?

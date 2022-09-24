@@ -5,7 +5,6 @@
 //  Created by Shindalkar, Suraj Manmath on 9/22/22.
 //
 
-import Foundation
 import SwiftUI
 
 struct FavouriteIndicatorView: View {

@@ -6,13 +6,13 @@
 //
 
 import Foundation
-import SwiftUI
+import UIKit
 
+/// This singleton service is kind of NSManagedObjectContext in Core data. It loads last updated and favourites on its initialisation and and keeps updated this data. PersistentStorageService data from this service while saving data on disk when app enters background
 class InMemoryStorageService {
     
     static let shared = InMemoryStorageService()
     
-    // This model is used to save data on disk as well read data from disk
     var storageModel: InMemoryStorageModel
     
     init() {
@@ -20,6 +20,9 @@ class InMemoryStorageService {
         let favourites = PersistantStoreService.shared.getFavourites()
         storageModel = InMemoryStorageModel(lastUpdated: lastUpdated,
                                       favourites: favourites)
+        
+        NotificationCenter.default
+                    .addObserver(self, selector: #selector(self.clearCache), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     func saveLastUpdated(pic: PicOfTheDay) {
@@ -38,6 +41,11 @@ class InMemoryStorageService {
         } else {
            storageModel.favourites = favourites + [pic]
         }
+    }
+    
+    // Remove In Memory Image Cache while going to background, otherwise Memory will keep increasing significantly if app is not killed for a long time as these images are heavy
+    @objc private func clearCache() {
+        storageModel.imageCache.removeAll()
     }
     
 }

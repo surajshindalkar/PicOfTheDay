@@ -7,32 +7,63 @@
 
 import SwiftUI
 
+/// SwifttUI view for loading image from a URL asynchronously. Also provides optional in memory caching functionality
 struct AsyncImage: View {
     
-    @ObservedObject var imageLoader = ImageLoader()
+    @StateObject private var viewModel = AsynImageViewModel()
     
-    let url: URL
-    let width: CGFloat
-    let height: CGFloat
+    private let url: URL
+    private let width: CGFloat
+    private let height: CGFloat
+    
+    // If provided, fetched image will be cached in Memory
+    private let cacheKey: String?
+    
+    
+    private struct Constants {
+        static let placeholderImage = "placeholder"
+    }
     
     init(width: CGFloat,
          height: CGFloat,
-         placeholderImage: Image,
          url: URL,
-         shouldCache: Bool = true,
          cacheKey: String? = nil) {
         self.url = url
         self.width = width
         self.height = height
-        imageLoader.loadUrlImage(url: url, cacheKey: cacheKey)
+        self.cacheKey = cacheKey
     }
     
     var body: some View {
-        imageLoader.image
-            .resizable()
-            .frame(width: width, height: height)
-            .onAppear {
-                imageLoader.loadUrlImage(url: self.url)
+        VStack {
+            switch viewModel.requestState {
+            case .loading:
+                loadingView
+                
+            case .success(let image):
+                image
+                    .resizable()
+                    .frame(width: width, height: height)
+                
+            case .failure(let error):
+                Text("\(error.localizedDescription)")
             }
+        }
+        .task {
+            viewModel.loadImage(url: url, cacheKey: cacheKey)
+        }
+    }
+    
+}
+
+extension AsyncImage {
+    var loadingView: some View {
+        ZStack {
+            Image(Constants.placeholderImage)
+                .resizable()
+            ProgressView()
+        }
+        .frame(width: width, height: height)
+        .redacted(reason: .placeholder)
     }
 }

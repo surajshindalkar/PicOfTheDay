@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+/// Provides status of favourites. It's a single source of truth for Favourites
 struct FavouritesService {
     
     static let shared = FavouritesService()
@@ -20,7 +21,6 @@ struct FavouritesService {
     }
     
     func fetchFavourites() {
-        let pics = InMemoryStorageService.shared.storageModel.favourites
-        subject.send(pics)
+        subject.send(InMemoryStorageService.shared.storageModel.favourites)
     }
 }
