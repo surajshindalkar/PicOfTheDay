@@ -14,8 +14,12 @@ enum PersistentStorageFailure: Error {
     case noDataInPersistentStore
 }
 
+protocol PicOfTheDayServiceProtocol {
+    func fetchPicOfTheDay(date: String) async throws -> PicOfTheDay?
+}
+
 /// This is single source of truth for getting PicOfTheDay. This service as an abstraction which uses different data sources depending on  requirements e.g. Service call to NASA API, InMemoryStorageServoce or PersistentStorageService.
-final class PicOfTheDayService {
+final class PicOfTheDayService: PicOfTheDayServiceProtocol {
     
     func fetchPicOfTheDay(date: String) async throws -> PicOfTheDay?  {
         

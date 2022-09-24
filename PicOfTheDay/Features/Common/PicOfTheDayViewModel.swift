@@ -29,7 +29,11 @@ class PicOfTheDayViewModel: ObservableObject {
     }
     
     func fetchPic() {
-        requestState = .loading
+        
+        dispatchOnMainThread { [weak self] in
+            self?.requestState = .loading
+        }
+
         Task {
             do {
                 if let pic = try await PicOfTheDayService().fetchPicOfTheDay(date: dateFormatter.string(from: date)) {
