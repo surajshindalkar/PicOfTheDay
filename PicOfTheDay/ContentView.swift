@@ -10,29 +10,24 @@ import SwiftUI
 struct ContentView: View {
     
     @Environment(\.scenePhase)var scenePhase
+    
+    private struct Constants {
+        static let home = NSLocalizedString("tab.home", comment: "")
+        static let favourites = NSLocalizedString("tab.favourites", comment: "")
+    }
 
     var body: some View {
         
         TabView {
             HomeTab()
                 .tabItem {
-                    Label("Home", systemImage: "list.dash")
+                    Label(Constants.home, systemImage: "list.dash")
                 }
             
             FavouritesTab()
             .tabItem {
-                Label("Favourites", systemImage: "heart.fill")
+                Label(Constants.favourites, systemImage: "heart.fill")
             }
         }
-        .onChange(of: scenePhase) { newPhase in
-            if newPhase == .inactive {
-                print("Inactive")
-            }else if newPhase == .active {
-                print("Active")
-            }else if newPhase == .background {
-                print("Background")
-            }
-        }
-        .padding()
     }
 }
