@@ -19,6 +19,8 @@ enum NASARequests: RESTRequestProtocol {
        //TODO: Put it into Configuration file or Inject it through CI-CD
        static let apiKeyValue = "pWJdXW7ngrxoGqW51CQQ0JCxSuLnpfqqZczO1jyK"
        static let apiKey = "api_key"
+       static let thumbsKey = "thumbs"
+       static let thumbsValue = "True"
        struct Paths {
           static let picOfTheDayPath = "/planetary/apod"
        }
@@ -49,6 +51,7 @@ enum NASARequests: RESTRequestProtocol {
             var params = [String: String]()
             params[Constants.apiKey] = Constants.apiKeyValue
             params[Constants.date] = date
+            params[Constants.thumbsKey] = Constants.thumbsValue
             return params
         }
     }

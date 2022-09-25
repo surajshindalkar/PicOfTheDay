@@ -10,7 +10,6 @@
 		8800AD7428DEAF9300A1AFF5 /* SwiftUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8800AD7328DEAF9300A1AFF5 /* SwiftUIWebView.swift */; };
 		8800AD7628DEB01700A1AFF5 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8800AD7528DEB01700A1AFF5 /* VideoPlayerView.swift */; };
 		8800AD7928DEB33F00A1AFF5 /* MediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8800AD7828DEB33F00A1AFF5 /* MediaView.swift */; };
-		8800AD7B28DEBAF000A1AFF5 /* PersistantStoreService+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8800AD7A28DEBAF000A1AFF5 /* PersistantStoreService+Image.swift */; };
 		8800AD7D28DED99500A1AFF5 /* ImageLoaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8800AD7C28DED99500A1AFF5 /* ImageLoaderService.swift */; };
 		8800AD7F28DEDB9100A1AFF5 /* AsynImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8800AD7E28DEDB9100A1AFF5 /* AsynImageViewModel.swift */; };
 		8800AD8128DEFE4A00A1AFF5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8800AD8028DEFE4A00A1AFF5 /* Localizable.strings */; };
@@ -20,6 +19,7 @@
 		8800AD8D28DF48D100A1AFF5 /* PicOfTheDay+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8800AD8C28DF48D100A1AFF5 /* PicOfTheDay+Mock.swift */; };
 		8800AD8F28DF504700A1AFF5 /* PersistentStorageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8800AD8E28DF504700A1AFF5 /* PersistentStorageServiceTests.swift */; };
 		8800AD9128DF691C00A1AFF5 /* ImageLoaderServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8800AD9028DF691C00A1AFF5 /* ImageLoaderServiceTests.swift */; };
+		8805108828E04681000EA756 /* PicDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8805108728E04681000EA756 /* PicDataSource.swift */; };
 		88267E1128DD71EB0011B1A8 /* InMemoryStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88267E1028DD71EB0011B1A8 /* InMemoryStorageService.swift */; };
 		88267E1328DD7F0F0011B1A8 /* InMemoryStorageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88267E1228DD7F0F0011B1A8 /* InMemoryStorageModel.swift */; };
 		88267E1528DDA18E0011B1A8 /* FavouriteListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88267E1428DDA18E0011B1A8 /* FavouriteListRowView.swift */; };
@@ -68,7 +68,6 @@
 		8800AD7328DEAF9300A1AFF5 /* SwiftUIWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIWebView.swift; sourceTree = "<group>"; };
 		8800AD7528DEB01700A1AFF5 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		8800AD7828DEB33F00A1AFF5 /* MediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaView.swift; sourceTree = "<group>"; };
-		8800AD7A28DEBAF000A1AFF5 /* PersistantStoreService+Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistantStoreService+Image.swift"; sourceTree = "<group>"; };
 		8800AD7C28DED99500A1AFF5 /* ImageLoaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoaderService.swift; sourceTree = "<group>"; };
 		8800AD7E28DEDB9100A1AFF5 /* AsynImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsynImageViewModel.swift; sourceTree = "<group>"; };
 		8800AD8028DEFE4A00A1AFF5 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -78,6 +77,7 @@
 		8800AD8C28DF48D100A1AFF5 /* PicOfTheDay+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PicOfTheDay+Mock.swift"; sourceTree = "<group>"; };
 		8800AD8E28DF504700A1AFF5 /* PersistentStorageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStorageServiceTests.swift; sourceTree = "<group>"; };
 		8800AD9028DF691C00A1AFF5 /* ImageLoaderServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoaderServiceTests.swift; sourceTree = "<group>"; };
+		8805108728E04681000EA756 /* PicDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicDataSource.swift; sourceTree = "<group>"; };
 		88267E1028DD71EB0011B1A8 /* InMemoryStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryStorageService.swift; sourceTree = "<group>"; };
 		88267E1228DD7F0F0011B1A8 /* InMemoryStorageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryStorageModel.swift; sourceTree = "<group>"; };
 		88267E1428DDA18E0011B1A8 /* FavouriteListRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouriteListRowView.swift; sourceTree = "<group>"; };
@@ -287,7 +287,6 @@
 				88FE25C928DB799600A27382 /* NASAPicService.swift */,
 				8899515728DC21BE00AEE82E /* FavouritesService.swift */,
 				88FEBAC528DC6FB100857469 /* PersistentStoreService.swift */,
-				8800AD7A28DEBAF000A1AFF5 /* PersistantStoreService+Image.swift */,
 				88267E1028DD71EB0011B1A8 /* InMemoryStorageService.swift */,
 				8800AD7C28DED99500A1AFF5 /* ImageLoaderService.swift */,
 			);
@@ -308,6 +307,7 @@
 				88FE25C528DB6F3F00A27382 /* PicOfTheDay.swift */,
 				8899515128DC143700AEE82E /* RequestState.swift */,
 				88267E1228DD7F0F0011B1A8 /* InMemoryStorageModel.swift */,
+				8805108728E04681000EA756 /* PicDataSource.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -446,7 +446,6 @@
 				8800AD7428DEAF9300A1AFF5 /* SwiftUIWebView.swift in Sources */,
 				8899515028DC09BC00AEE82E /* AsyncImage.swift in Sources */,
 				8800AD8428DF065800A1AFF5 /* Utilities.swift in Sources */,
-				8800AD7B28DEBAF000A1AFF5 /* PersistantStoreService+Image.swift in Sources */,
 				8899514828DBFF8600AEE82E /* FavouritesTab.swift in Sources */,
 				88FE25C628DB6F3F00A27382 /* PicOfTheDay.swift in Sources */,
 				88267E1528DDA18E0011B1A8 /* FavouriteListRowView.swift in Sources */,
@@ -469,6 +468,7 @@
 				8899515228DC143700AEE82E /* RequestState.swift in Sources */,
 				8899515828DC21BE00AEE82E /* FavouritesService.swift in Sources */,
 				8800AD7F28DEDB9100A1AFF5 /* AsynImageViewModel.swift in Sources */,
+				8805108828E04681000EA756 /* PicDataSource.swift in Sources */,
 				88267E1328DD7F0F0011B1A8 /* InMemoryStorageModel.swift in Sources */,
 				8800AD7628DEB01700A1AFF5 /* VideoPlayerView.swift in Sources */,
 			);

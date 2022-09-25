@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// SwifttUI view for loading image from a URL asynchronously. Also provides optional in memory caching functionality
+/// SwifttUI view for loading image from a URL asynchronously. Also provides optional  caching functionality
 struct AsyncImage: View {
     
     @StateObject private var viewModel = AsynImageViewModel()
@@ -16,9 +16,8 @@ struct AsyncImage: View {
     private let width: CGFloat
     private let height: CGFloat
     
-    // If provided, fetched image will be cached in Memory
+    // If provided, fetched image will be cached
     private let cacheKey: String?
-    
     
     private struct Constants {
         static let placeholderImage = "placeholder"

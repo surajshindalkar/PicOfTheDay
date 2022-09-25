@@ -9,23 +9,18 @@ import Foundation
 import Combine
 import UIKit
 
-
-enum PersistentStorageFailure: Error {
-    case noDataInPersistentStore
-}
-
 protocol PicOfTheDayServiceProtocol {
-    func fetchPicOfTheDay(date: String) async throws -> PicOfTheDay?
+    func fetchPicOfTheDay(date: String) async throws -> PicDataSource?
 }
 
 /// This is single source of truth for getting PicOfTheDay. This service as an abstraction which uses different data sources depending on  requirements e.g. Service call to NASA API, InMemoryStorageServoce or PersistentStorageService.
-final class PicOfTheDayService: PicOfTheDayServiceProtocol {
+struct PicOfTheDayService: PicOfTheDayServiceProtocol {
     
-    func fetchPicOfTheDay(date: String) async throws -> PicOfTheDay?  {
+    func fetchPicOfTheDay(date: String) async throws -> PicDataSource?  {
         
         // Check if we have it in memory cache
         if let pic = InMemoryStorageService.shared.getPicOfTheDay(id: date) {
-            return pic
+            return PicDataSource.inMemory(pic)
         }
         
         // No data in Cache
@@ -33,11 +28,13 @@ final class PicOfTheDayService: PicOfTheDayServiceProtocol {
             // Make API Call
             let pic = try await NASAPicService.pic(date: date)
             
-            // Store in InMemoryCache
-            InMemoryStorageService.shared.saveLastUpdated(pic: pic)
+            // Store in Persistent Store
+            PersistantStoreService.shared.saveLastUpdated(pic: pic)
+            
+            // Store in In Memory cache so that if same requets is hit, we do not need to make another call
             InMemoryStorageService.shared.savePicOfTheDay(id: date, pic: pic)
             
-            return pic
+            return PicDataSource.remote(pic)
             
         } catch {
             
@@ -49,9 +46,9 @@ final class PicOfTheDayService: PicOfTheDayServiceProtocol {
             if errorCode == NSURLErrorNotConnectedToInternet {
                 // Check if pic exists in Persistent Storage
                 if let pic = PersistantStoreService.shared.getLastUpdated() {
-                    return pic
+                    return PicDataSource.persistent(pic)
                 } else {
-                    throw PersistentStorageFailure.noDataInPersistentStore
+                    throw error
                 }
             } else {
                 // Error is not because of No Internet Connectivity. We can not do much here. Throw API error

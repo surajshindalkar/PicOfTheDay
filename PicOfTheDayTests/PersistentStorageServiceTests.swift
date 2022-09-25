@@ -14,7 +14,6 @@ final class PersistentStorageServiceTests: XCTestCase {
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        InMemoryStorageService.shared.storageModel.lastUpdated = PicOfTheDay.getMock()
         InMemoryStorageService.shared.storageModel.favourites = PicOfTheDay.getMockForFavourites()
         
         service.save()
@@ -25,8 +24,9 @@ final class PersistentStorageServiceTests: XCTestCase {
     }
 
     func testGetLastUpdated() {
+        service.saveLastUpdated(pic: PicOfTheDay.getMock())
         let lastUpdated = service.getLastUpdated()
-        XCTAssertEqual(lastUpdated?.id, InMemoryStorageService.shared.storageModel.lastUpdated?.id)
+        XCTAssertEqual(lastUpdated?.id, PicOfTheDay.getMock().id)
     }
     
     func testGetFavourites() {

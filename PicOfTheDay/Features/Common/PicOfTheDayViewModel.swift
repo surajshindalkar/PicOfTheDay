@@ -11,7 +11,7 @@ import Combine
 /// ViewModel for fetching Pic of The Day data required to drive PicofTheView. This viewModel also registers itself to observe changes from  FavouritesService so that it can update itself  with respect changes in Favourites anywhere into the app e.g. in Favourites tab
 class PicOfTheDayViewModel: ObservableObject {
     
-    @Published var requestState: RequestState<PicOfTheDay> = .loading
+    @Published var requestState: RequestState<PicDataSource> = .loading
     @Published var date = Date()
     
     @Published private var favouritePics: [PicOfTheDay]?
@@ -40,10 +40,6 @@ class PicOfTheDayViewModel: ObservableObject {
                     dispatchOnMainThread { [weak self] in
                         self?.requestState = .success(pic)
                     }
-                } else {
-                    dispatchOnMainThread { [weak self] in
-                        self?.requestState = .failure(PersistentStorageFailure.noDataInPersistentStore)
-                    }
                 }
             } catch {
                 dispatchOnMainThread { [weak self] in 
@@ -59,7 +55,7 @@ class PicOfTheDayViewModel: ObservableObject {
     
     func isFavourite() -> Bool {
         guard let favourites = favouritePics else { return false }
-        return favourites.contains { $0.id == requestState.value?.id }
+        return favourites.contains { $0.id == requestState.value?.currentValue.id }
     }
     
     // Returns mock data needed to show as placeholder for redacted view

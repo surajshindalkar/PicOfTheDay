@@ -8,26 +8,28 @@
 import Foundation
 import UIKit
 
-/// This singleton service is kind of NSManagedObjectContext in Core data. It loads last updated and favourites on its initialisation and and keeps updated this data. PersistentStorageService data from this service while saving data on disk when app enters background
-class InMemoryStorageService {
+protocol InMemoryStorageServiceProtocol {
+    func saveFavourite(pic: PicOfTheDay)
+    func clearCache()
+    func getPicOfTheDay(id: String) -> PicOfTheDay?
+    func getImageData(key: String) -> Data?
+    func saveImage(key: String, imageData: Data)
+    func savePicOfTheDay(id: String, pic: PicOfTheDay)
+}
+
+/// This singleton service is kind of NSManagedObjectContext in Core data. It loads favourites on its initialisation from PersistentStorageService and and keeps updated its data. PersistentStorageService uses data from this service while saving data on disk when app enters background
+struct InMemoryStorageService: InMemoryStorageServiceProtocol {
     
     static let shared = InMemoryStorageService()
-    
     var storageModel: InMemoryStorageModel
     
     init() {
-        let lastUpdated = PersistantStoreService.shared.getLastUpdated()
         let favourites = PersistantStoreService.shared.getFavourites()
-        storageModel = InMemoryStorageModel(lastUpdated: lastUpdated,
-                                      favourites: favourites)
-        
-        NotificationCenter.default
-                    .addObserver(self, selector: #selector(self.clearCache), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        storageModel = InMemoryStorageModel(favourites: favourites)
     }
-    
-    func saveLastUpdated(pic: PicOfTheDay) {
-        storageModel.lastUpdated = pic
-    }
+}
+
+extension InMemoryStorageService {
     
     func saveFavourite(pic: PicOfTheDay) {
         guard let favourites = storageModel.favourites else {
@@ -43,14 +45,11 @@ class InMemoryStorageService {
         }
     }
     
-    // Remove In Memory Image Cache while going to background, otherwise Memory will keep increasing significantly if app is not killed for a long time as these images are heavy
-    @objc private func clearCache() {
+    func clearCache() {
         storageModel.imageCache.removeAll()
+        storageModel.picCache.removeAll()
     }
-    
-}
 
-extension InMemoryStorageService {
     
     func getPicOfTheDay(id: String) -> PicOfTheDay? {
         return storageModel.picCache[id]

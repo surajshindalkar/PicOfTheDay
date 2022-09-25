@@ -13,6 +13,7 @@ struct HomeTab: View {
     
     private struct Constants {
         static let selectDate = NSLocalizedString("homeTab.selectDate", comment: "")
+        static let noInternetMessage = NSLocalizedString("noInternetConnection.message", comment: "")
     }
 
     var body: some View {
@@ -21,6 +22,12 @@ struct HomeTab: View {
             
             datePicker
             
+            // If data is fetched from persistent storage, there is no internet connection
+            if let persistentDataSource = viewModel.requestState.value?.persistent, persistentDataSource {
+                Text(Constants.noInternetMessage)
+                    .foregroundColor(.red)
+            }
+  
             switch viewModel.requestState {
             case .loading:
                 PicOfTheDayView(title: viewModel.mockPicForRedactedPlaceholder().title,
@@ -33,14 +40,14 @@ struct HomeTab: View {
                 .redacted(reason: .placeholder)
                 
             case .success(let pic):
-                PicOfTheDayView(title: pic.title,
-                                date: pic.date,
-                                url: pic.url,
-                                explanation: pic.explanation,
+                PicOfTheDayView(title: pic.currentValue.title,
+                                date: pic.currentValue.date,
+                                url: pic.currentValue.url,
+                                explanation: pic.currentValue.explanation,
                                 isFavourite: viewModel.isFavourite(),
-                                mediaType: PicOfTheDay.MediaType(rawValue: pic.mediaType) ?? .image,
+                                mediaType: PicOfTheDay.MediaType(rawValue: pic.currentValue.mediaType) ?? .image,
                                 toggleCallback: {
-                                    viewModel.toggleFavourite(pic: pic)
+                    viewModel.toggleFavourite(pic: pic.currentValue)
                                 })
 
             case .failure(let error):

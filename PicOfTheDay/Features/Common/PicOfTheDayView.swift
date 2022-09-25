@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-///View that displays Astronomy of The Day data. This is reusable view and is being used for Favourotes as well
+///View that displays Astronomy Pic of The Day data. This is a reusable view and is being used for Favourites as well
 struct PicOfTheDayView: View {
     let title: String
     let date: String
@@ -47,7 +47,6 @@ struct PicOfTheDayView: View {
                 // Explanation
                 Text(Constants.explanation)
                     .font(.headline)
-                
                 Text("\(explanation)")
                     .font(.body)
                     .multilineTextAlignment(.leading)

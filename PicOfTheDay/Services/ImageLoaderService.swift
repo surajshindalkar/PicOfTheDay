@@ -10,12 +10,14 @@ import Combine
 import SwiftUI
 
 enum ImageLoadingError: Error {
-    case noDataFound
     case decodingError
 }
 
+protocol ImageLoaderServiceProtocol  {
+    static func loadUrlImage(url: URL, cacheKey: String?) async throws -> Image
+}
 /// Service to fetch images from url. It also provides optional in memory caching mechanism
-class ImageLoaderService {
+struct ImageLoaderService: ImageLoaderServiceProtocol {
     
     static func loadUrlImage(url: URL, cacheKey: String? = nil) async throws -> Image {
         
@@ -32,6 +34,7 @@ class ImageLoaderService {
                         // Store image in cache
                         InMemoryStorageService.shared.saveImage(key: key,
                                                                 imageData: data)
+                        PersistantStoreService.shared.saveImage(id: key, imageData: data)
                     }
                     return Image(uiImage: imageUI)
                 } else {
@@ -51,7 +54,7 @@ class ImageLoaderService {
                         return Image(uiImage: imageData)
                     } else {
                         // No cached data in Persistent Storage, throw error
-                        throw PersistentStorageFailure.noDataInPersistentStore
+                        throw error
                     }
                 } else {
                     // Error is not due to Internet Connectivity. Throw API error

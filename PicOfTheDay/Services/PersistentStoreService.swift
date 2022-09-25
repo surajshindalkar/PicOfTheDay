@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SwiftUI
 
-/// This service is responsible for caching in hard disk. We use this service to support No Internet Connectivity.
+/// This service is responsible for caching data on hard disk. We use this service to support No Internet Connectivity.
 class PersistantStoreService {
     
     static let shared = PersistantStoreService()
@@ -18,22 +18,22 @@ class PersistantStoreService {
     private let decoder = JSONDecoder()
     private let favouritesDataSourceURL: URL
     private let lastUpdatedDataSourceURL: URL
+    private let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
     init() {
-        
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        favouritesDataSourceURL = documentsPath.appendingPathComponent("Favourites").appendingPathExtension("json")
-        lastUpdatedDataSourceURL = documentsPath.appendingPathComponent("LastUpdated").appendingPathExtension("json")
-        
+        favouritesDataSourceURL = documentsDirectory.appendingPathComponent("Favourites").appendingPathExtension("json")
+        lastUpdatedDataSourceURL = documentsDirectory.appendingPathComponent("LastUpdated").appendingPathExtension("json")
         NotificationCenter.default
                     .addObserver(self, selector: #selector(self.save), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        
     }
     
-    // Save last updated pic and pic image, favourites and favourite images on disk. This save operation is done on every app did enter background event
+    // Save Favourites and favourite images on disk. This save operation is done on every app did enter background event. Saving image to disk is heavy operation. So we are doing this only on app enterered background event instead of each Favourite toggle event
     @objc func save() {
-        saveLastUpdated()
-        saveFavourites()
-        saveImages()
+        saveFavouriteObjects()
+        saveFavouriteImages()
+        clearInMemomyCache()
+        deleteNoLongerFavouriteImages()
     }
     
     func getLastUpdated() -> PicOfTheDay? {
@@ -56,8 +56,7 @@ class PersistantStoreService {
         }
     }
     
-    private func saveLastUpdated() {
-        guard let pic = InMemoryStorageService.shared.storageModel.lastUpdated else { return  }
+    func saveLastUpdated(pic: PicOfTheDay) {
         do {
             let data = try encoder.encode(pic)
             try data.write(to: lastUpdatedDataSourceURL)
@@ -66,7 +65,12 @@ class PersistantStoreService {
         }
     }
     
-    private func saveFavourites() {
+    // Need to clear InMemoryCache as this will keep increasing memory if the app is not killed for a long time
+    private func clearInMemomyCache() {
+        InMemoryStorageService.shared.clearCache()
+    }
+    
+    private func saveFavouriteObjects() {
         guard let favourites = InMemoryStorageService.shared.storageModel.favourites else { return  }
         do {
             let data = try encoder.encode(favourites)
@@ -76,14 +80,7 @@ class PersistantStoreService {
         }
     }
     
-    private func saveImages() {
-        
-        // Save Last Updated Image
-        if let lastUpdated = InMemoryStorageService.shared.storageModel.lastUpdated,
-           let image = InMemoryStorageService.shared.getImageData(key: lastUpdated.url) {
-            saveImage(id: lastUpdated.id, imageData: image)
-        }
-        
+    private func saveFavouriteImages() {
         // Save Favourite images
         guard let favourites = InMemoryStorageService.shared.storageModel.favourites else { return }
         favourites.forEach { favourite in
@@ -94,5 +91,63 @@ class PersistantStoreService {
         }
     }
     
+    /// Delets images that are no longer favourite. This is  required otherwise App will keep data on images if an image is marked as favourite even when it is marked as UnFavourite later
+    private func deleteNoLongerFavouriteImages() {
+        let favourites = InMemoryStorageService.shared.storageModel.favourites?.compactMap({$0.id})
+        
+        let excludeDeleteIDs = (favourites ?? []) + ["Favourites.json"] + ["LastUpdated.json"]
+        
+        do {
+            let fileURLs = try FileManager.default.contentsOfDirectory(at: documentsDirectory,
+                                                                       includingPropertiesForKeys: nil,
+                                                                       options: .skipsHiddenFiles)
+            for fileURL in fileURLs {
+                if !excludeDeleteIDs.contains(fileURL.lastPathComponent) {
+                    try FileManager.default.removeItem(at: fileURL)
+                }
+            }
+        } catch  { print(error) }
+    }
 }
 
+
+/// Extension to store and retrieve images from and to Documents directory
+extension PersistantStoreService {
+    
+    func saveImage(id: String, imageData: Data) {
+        deleteImageIfExists(id: id)
+        let fileName = id
+        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+        do {
+            try imageData.write(to: fileURL)
+        } catch let error {
+            print("error saving file with error", error)
+        }
+        
+    }
+    
+    func loadImageFromDiskWith(id: String) -> UIImage? {
+        let fileName = id
+        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+        if let image = UIImage(contentsOfFile: fileURL.path) {
+            return image
+        }
+        return nil
+    }
+    
+    private func deleteImageIfExists(id: String) {
+        let fileName = id
+        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+        //Checks if file exists, removes it if so.
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            do {
+                try FileManager.default.removeItem(atPath: fileURL.path)
+                print("Removed old image")
+            } catch let removeError {
+                print("couldn't remove file at path", removeError)
+            }
+            
+        }
+    }
+    
+}

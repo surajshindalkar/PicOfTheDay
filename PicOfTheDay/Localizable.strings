@@ -17,3 +17,8 @@
 "picOfTheDay.date" = "Date : %@";
 "picOfTheDay.title" = "Title: %@";
 "picOfTheDay.explanation" = "Explanation";
+
+// No Internect Connections message
+"noInternetConnection.message" = "No Internet Connection. Showing Last Updated data";
+
+"noFavourites.message" = "No Favourite added here";
