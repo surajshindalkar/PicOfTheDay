@@ -35,10 +35,12 @@ struct FavouritesTab: View {
                                     viewModel.toggleFavourite(pic: favourite)
                                 })
                             } label: {
-                                FavouriteListRowView(title: favourite.title,
-                                                     date: favourite.date,
-                                                     url: url(favourite: favourite))
-                                .listRowInsets(EdgeInsets())
+                                if let url = url(favourite: favourite) {
+                                    FavouriteListRowView(title: favourite.title,
+                                                         date: favourite.date,
+                                                         url: url)
+                                    .listRowInsets(EdgeInsets())
+                                }
                             }
                         }
                         .onDelete { indexSet in
@@ -52,15 +54,16 @@ struct FavouritesTab: View {
                 }
             }
         }
+        .padding(.horizontal, 16)
     }
 }
 
 extension FavouritesTab {
-    func url(favourite: PicOfTheDay) -> String {
+    func url(favourite: PicOfTheDay) -> String? {
         if favourite.type == PicOfTheDay.MediaType.image {
             return favourite.url
         } else {
-            return favourite.thumbnailUrl ?? ""
+            return favourite.thumbnailUrl
         }
     }
 }

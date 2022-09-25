@@ -29,5 +29,6 @@ struct ContentView: View {
                 Label(Constants.favourites, systemImage: "heart.fill")
             }
         }
+        .padding()
     }
 }
