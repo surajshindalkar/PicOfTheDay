@@ -26,6 +26,8 @@ class PersistantStoreService {
         NotificationCenter.default
                     .addObserver(self, selector: #selector(self.save), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
+        NotificationCenter.default
+                    .addObserver(self, selector: #selector(self.save), name: UIApplication.willTerminateNotification, object: nil)
     }
     
     // Save Favourites and favourite images on disk. This save operation is done on every app did enter background event. Saving image to disk is heavy operation. So we are doing this only on app enterered background event instead of each Favourite toggle event
